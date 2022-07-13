@@ -1,4 +1,4 @@
-from msg import make_msg, tell_no_token
+from msg import *
 from req import get_data
 
 
@@ -12,6 +12,11 @@ wish = {
 async def prg() -> None:
 
     data = get_data()
+
+    if data is None:
+        await tell_no_token()
+        return
+    
     filtered_data = filter_data(data)
 
     await make_msg(filtered_data)
@@ -28,3 +33,11 @@ def filter_data(data:list[dict]) -> list[dict]: # keeps only wished accomodation
                     filtered.append(acc)
     
     return filtered
+
+
+def test_req() -> bool:
+
+    data = get_data()
+
+    if data is None: return False
+    else: return True

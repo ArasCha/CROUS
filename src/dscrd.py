@@ -1,7 +1,7 @@
 import discord
 from datetime import datetime
-from logements import prg
-from dotenv import dotenv_values
+from logements import prg, test_req
+from dotenv import dotenv_values, set_key
 from discord.ext import commands
 import asyncio
 
@@ -64,6 +64,16 @@ async def start(context:commands.Context) -> None:
         print("Stopped")
     else:
         await context.send("Le programme est déjà démarré")
+
+
+@client.command()
+async def token(context:commands.Context, token) -> None:
+
+    set_key(".env", "CROUS_TOKEN", token)
+    if test_req():
+        await notifier("Ce token fonctionne")
+    else:
+        await notifier("Ce token ne fonctionne pas")
 
 
 #-------------------------------------FUNCTIONS-----------------------------------------

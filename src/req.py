@@ -2,10 +2,9 @@ import requests
 from dotenv import dotenv_values
 
 
-config = dotenv_values(".env")
-
-
 def get_data() -> list[dict]:
+
+    config = dotenv_values(".env")
     
     url = 'https://trouverunlogement.lescrous.fr/api/fr/search/26'
 

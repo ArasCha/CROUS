@@ -2,12 +2,18 @@ import discord
 import datetime
 from logements import prg
 from dotenv import dotenv_values
+from discord.ext import commands
+import asyncio
 
 
-def_int = discord.Intents.default()
-def_int.members = True # nécessaire pour agir sur les membres
 
-client = discord.Client(intents = def_int)
+client = commands.Bot(command_prefix = '!')
+
+running = True
+
+def set_running(val:bool) -> None:
+    import dscrd
+    dscrd.running = val
 
 
 #-----------------------------------------------------------------------------------------
@@ -18,7 +24,15 @@ client = discord.Client(intents = def_int)
 async def on_ready(): # lorsque l'on a lancé le bot par client.run()
     
     print("Programme lancé")
-    await prg()
+
+    async def issou():
+        while True:
+            if running:
+                await prg()
+            await asyncio.sleep(10)
+    
+    prog = asyncio.create_task(issou())
+
 
 
 async def notifier(msg:str):
@@ -56,6 +70,33 @@ async def already_sent(msg:str, channel:discord.TextChannel):
             return True
 
     return False
+
+
+@client.command()
+async def status(context):
+
+    if running:
+        await context.send("Le programme est en cours de fonctionnement")
+    else:
+        await context.send("Le programme est arrêté")
+
+@client.command()
+async def stop(context):
+
+    if running:
+        set_running(False)
+        await context.send("Le programme s'arrête")
+    else:
+        await context.send("Le programme est déjà arrêté")
+
+@client.command()
+async def start(context):
+
+    if not running:
+        set_running(True)
+        await context.send("Le programme se démarre")
+    else:
+        await context.send("Le programme est déjà démarré")
 
 
 config = dotenv_values(".env")

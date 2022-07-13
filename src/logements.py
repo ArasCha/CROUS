@@ -1,19 +1,14 @@
-
-import time
 from msg import make_msg
 from req import get_data
 
+status = True
 
 async def prg():
 
-    while True:
+    data = get_data()
+    filtered_data = filter_data(data)
 
-        data = get_data()
-        filtered_data = filter_data(data)
-
-        await make_msg(filtered_data)
-
-        time.sleep(60)
+    await make_msg(filtered_data)
 
 
 def filter_data(data:list[dict]) -> list[dict]: # keeps only wished accomodations

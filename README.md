@@ -15,11 +15,11 @@ Stop the bot from making requests
 ### !token <token_value>
 Change token
 
-### Information
+## Information
 
 The bot points out when the token is dead
 
-### Start the program
+## Start the program
 
 Just after pulling the project:
 
@@ -36,3 +36,34 @@ Just after pulling the project:
 
 - still in the Python environment, launch the program:
 	- do `python main.py` in the `src` folder
+
+### On the Sam's Rasp:
+
+
+- Pulling:
+	- Go in the `Aras` folder (home/Aras/):
+	- `sudo git pull https://github.com/ArasCha/CROUS.git`
+	- username: ArasCha
+	- password: my GitHub token
+
+- Creating the `.env` file:
+	- `sudo touch .env`
+	- `sudo nano .env`
+	- Write the .env content.
+	- Ctrl+o to save the file
+	- Ctrl+x to exit the file
+
+- Creating the environment:
+	- `sudo python3 -m venv env`
+
+- Activating the environment:
+	- go in `/env/bin`
+	- `source activate`
+
+- Installing requirements:
+	- `sudo pip install -r requirements-dev.txt`
+	Using sudo makes us going outside of the environment
+	So we have to do what is said on this page:
+	https://superuser.com/questions/232231/how-do-i-make-sudo-preserve-my-environment-variables
+- Launching the program:
+	- `

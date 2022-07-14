@@ -47,9 +47,10 @@ Just after pulling the project:
 	- password: my GitHub token
 
 - Creating the `.env` file:
+	- go the `src/` folder
 	- `sudo touch .env`
 	- `sudo nano .env`
-	- Write the .env content.
+	- Write in the necessary content (explained above)
 	- Ctrl+o to save the file
 	- Ctrl+x to exit the file
 
@@ -61,9 +62,15 @@ Just after pulling the project:
 	- `source activate`
 
 - Installing requirements:
-	- `sudo pip install -r requirements-dev.txt`
-	Using sudo makes us going outside of the environment
-	So we have to do what is said on this page:
+	- Make sure you're in the Python environment (env)
+	We have to use sudo to install packages with pip on this Rasp.
+	But using sudo makes us going outside of the environment.
+	We have to make sudo keeping us in the environment by using it.
+	So we have to do what is said on this page (it's done, no need to do that anymore)
 	https://superuser.com/questions/232231/how-do-i-make-sudo-preserve-my-environment-variables
+	Then:
+	- `sudo pip install -r requirements-dev.txt`
+
 - Launching the program:
-	- `
+	- go in the `src/` folder
+	- `python main.py`

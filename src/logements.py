@@ -1,13 +1,22 @@
 from msg import *
 from req import get_data
+import re
 
 
-wish = {
+wishes = [
+{
     "city": "Nantes",
     "max_price": 30000, # 30000 means actually 300,00€
     "min_area": 9,
     "bedCount": 1
+},
+{
+    "city": "La-Roche-sur-Yon",
+    "max_price": 100000,
+    "min_area": 1,
+    "bedCount": 1
 }
+]
 
 async def prg() -> None:
 
@@ -26,11 +35,14 @@ def filter_data(data:list[dict]) -> list[dict]: # keeps only wished accomodation
 
     filtered = []
 
-    for acc in data:
-        if acc["area"]["max"] >= wish["min_area"]:
-            if acc["bedCount"] == wish["bedCount"]:
-                if acc["occupationModes"][0]["rent"]["max"] <= wish["max_price"]:
-                    filtered.append(acc)
+    for wish in wishes:
+
+        for acc in data:
+            if re.search(wish["city"], acc["residence"]["address"], re.IGNORECASE):
+                if acc["area"]["max"] >= wish["min_area"]:
+                    if acc["bedCount"] == wish["bedCount"]:
+                        if acc["occupationModes"][0]["rent"]["max"] <= wish["max_price"]:
+                            filtered.append(acc)
     
     return filtered
 

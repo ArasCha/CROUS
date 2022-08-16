@@ -98,6 +98,21 @@ async def city(context:commands.Context, wished_city) -> None: # envoie dans le 
             await context.send(msg)
 
 
+@client.command()
+async def clear(context:commands.Context, nb) -> None: # delete the last nb messages
+
+    channel: discord.TextChannel = client.get_channel(996707470556803099)
+    messages: list[discord.Message] = await get_previous_msgs(channel)
+
+    nb = int(nb)
+
+    if nb > len(messages):
+        nb = len(messages)
+
+    for i in range(nb):
+        await messages[i].delete()
+
+
 #-------------------------------------FUNCTIONS-----------------------------------------
 
 

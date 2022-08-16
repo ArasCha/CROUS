@@ -66,11 +66,10 @@ Just after pulling the project:
 	We have to use sudo to install packages with pip on this Rasp.
 	But using sudo makes us going outside of the environment.
 	We have to make sudo keeping us in the environment by using it.
-	So we have to do what is said on this page (it's done, no need to do that anymore)
-	https://superuser.com/questions/232231/how-do-i-make-sudo-preserve-my-environment-variables
-	Then:
-	- `sudo pip install -r requirements-dev.txt`
+	So we have to do what is said on this page:
+	https://stackoverflow.com/questions/50335676/sudo-privileges-within-python-virtualenv
+	- `sudo ./env/bin/python -m pip install -r requirements-dev.txt`
 
 - Launching the program:
 	- go in the `src/` folder
-	- `python main.py`
+	- `sudo ../env/bin/python main.py`

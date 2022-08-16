@@ -23,7 +23,7 @@ def get_data() -> list[dict]:
         "Referrer-Policy": "strict-origin-when-cross-origin"
     }
 
-    body = '{\"precision\":6,\"need_aggregation\":true,\"page\":1,\"pageSize\":24,\"sector\":null,\"idTool\":26,\"occupationModes\":[],\"equipment\":[],\"price\":{\"min\":0,\"max\":null},\"location\":[{\"lon\":-1.6418,\"lat\":47.2959},{\"lon\":-1.4788,\"lat\":47.1806}]}'
+    body= "{\"precision\":6,\"need_aggregation\":true,\"page\":1,\"pageSize\":1000,\"sector\":null,\"idTool\":26,\"occupationModes\":[],\"equipment\":[],\"price\":{\"min\":0,\"max\":null},\"location\":[{\"lon\":-5.4534,\"lat\":51.2683},{\"lon\":9.8678,\"lat\":41.2632}]}"
 
     reponse = requests.post(url, headers=headers, data=body)
     data = reponse.json()

@@ -71,9 +71,9 @@ async def token(context:commands.Context, token) -> None:
 
     set_key(".env", "CROUS_TOKEN", token)
     if test_req():
-        await notifier("Ce token fonctionne")
+        await send_msg("Ce token fonctionne")
     else:
-        await notifier("Ce token ne fonctionne pas")
+        await send_msg("Ce token ne fonctionne pas")
 
 
 #-------------------------------------FUNCTIONS-----------------------------------------
@@ -84,8 +84,12 @@ async def notifier(msg:str) -> None:
     channel: discord.TextChannel = client.get_channel(996707470556803099)
     await clean_old_msgs(channel)
     if not await already_sent(msg, channel):
-        await channel.send(msg)
+        await send_msg(msg)
 
+async def send_msg(msg:str) -> None:
+
+    channel: discord.TextChannel = client.get_channel(996707470556803099)
+    await channel.send(msg)
 
 async def get_previous_msgs(channel:discord.TextChannel) -> list[str]:
 

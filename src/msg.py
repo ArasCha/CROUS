@@ -14,4 +14,4 @@ async def make_msg(accomodations: list[dict]) -> None:
 
 async def tell_no_token() -> None:
 
-    await dscrd.notifier("**Le token est mort**")
+    await dscrd.send_msg("**Le token est mort**")

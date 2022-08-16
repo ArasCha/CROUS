@@ -15,6 +15,12 @@ Stop the bot from making requests
 ### !token <token_value>
 Change token
 
+!city <string>
+Displays the city name, residence name, rent amount and area size of the city corresponding to the string given
+
+### !clear <nb>
+Delete the last nb messages from the tchat
+
 ## Information
 
 The bot points out when the token is dead

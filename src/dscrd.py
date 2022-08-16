@@ -1,9 +1,11 @@
+import json
 import discord
 from datetime import datetime
 from logements import prg, test_req
 from dotenv import dotenv_values, set_key
 from discord.ext import commands
 import asyncio
+import re
 
 
 
@@ -71,9 +73,29 @@ async def token(context:commands.Context, token) -> None:
 
     set_key(".env", "CROUS_TOKEN", token)
     if test_req():
-        await send_msg("Ce token fonctionne")
+        await context.send("Ce token fonctionne")
     else:
-        await send_msg("Ce token ne fonctionne pas")
+        await context.send("Ce token ne fonctionne pas")
+
+
+@client.command()
+async def city(context:commands.Context, wished_city) -> None: # envoie dans le tchat les logements qui correspondent à la ville demandée
+
+    data = []
+
+    with open("../available.json", "r") as f:
+        data = json.loads(f.read())
+
+    for acc in data:
+        if re.search(wished_city, acc["residence"]["address"], re.IGNORECASE):
+
+            area = acc["area"]["max"]
+            rent = acc["occupationModes"][0]["rent"]["max"]
+            residence = acc["residence"]["label"]
+            city = acc["residence"]["sector"]["label"]
+
+            msg = f"{city} - {residence}\n{rent/100}€/mois\n{area}m²"
+            await context.send(msg)
 
 
 #-------------------------------------FUNCTIONS-----------------------------------------

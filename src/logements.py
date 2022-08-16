@@ -1,6 +1,7 @@
 from msg import *
 from req import get_data
 import re
+import json
 
 
 wishes = [
@@ -25,6 +26,10 @@ async def prg() -> None:
     if data is None:
         await tell_no_token()
         return
+
+    with open("../available.json", "w") as f:
+        new_data = json.dumps(data)
+        f.write(new_data)
     
     filtered_data = filter_data(data)
 

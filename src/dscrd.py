@@ -79,9 +79,10 @@ async def token(context:commands.Context, token) -> None:
 
 
 @client.command()
-async def city(context:commands.Context, wished_city) -> None: # envoie dans le tchat les logements qui correspondent à la ville demandée
+async def city(context:commands.Context, *args) -> None: # envoie dans le tchat les logements qui correspondent à la ville demandée
 
     data = []
+    wished_city = " ".join(args)
 
     with open("../available.json", "r") as f:
         data = json.loads(f.read())

@@ -87,12 +87,12 @@ async def city(context:commands.Context, wished_city) -> None: # envoie dans le 
         data = json.loads(f.read())
 
     for acc in data:
-        if re.search(wished_city, acc["residence"]["address"], re.IGNORECASE):
+        city = acc["residence"]["sector"]["label"]
+        if re.search(wished_city, city, re.IGNORECASE):
 
             area = acc["area"]["max"]
             rent = acc["occupationModes"][0]["rent"]["max"]
             residence = acc["residence"]["label"]
-            city = acc["residence"]["sector"]["label"]
 
             msg = f"{city} - {residence}\n{rent/100}€/mois\n{area}m²"
             await context.send(msg)

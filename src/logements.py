@@ -43,7 +43,7 @@ def filter_data(data:list[dict]) -> list[dict]: # keeps only wished accomodation
     for wish in wishes:
 
         for acc in data:
-            if re.search(wish["city"], acc["residence"]["address"], re.IGNORECASE):
+            if re.search(wish["city"], acc["residence"]["sector"]["label"], re.IGNORECASE):
                 if acc["area"]["max"] >= wish["min_area"]:
                     if acc["bedCount"] == wish["bedCount"]:
                         if acc["occupationModes"][0]["rent"]["max"] <= wish["max_price"]:

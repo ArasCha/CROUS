@@ -12,7 +12,7 @@ wishes = [
     "bedCount": 1
 },
 {
-    "city": "La Roche-sur-Yon",
+    "city": "La Roche Sur Yon",
     "max_price": 100000,
     "min_area": 1,
     "bedCount": 1

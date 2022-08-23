@@ -10,12 +10,6 @@ wishes = [
     "max_price": 30000, # 30000 means actually 300,00€
     "min_area": 9,
     "bedCount": 1
-},
-{
-    "city": "La Roche Sur Yon",
-    "max_price": 100000,
-    "min_area": 1,
-    "bedCount": 1
 }
 ]
 

@@ -6,7 +6,8 @@ from dotenv import dotenv_values, set_key
 from discord.ext import commands
 import asyncio
 import re
-
+import os
+import time
 
 
 client = commands.Bot(command_prefix = '!')
@@ -97,6 +98,10 @@ async def city(context:commands.Context, *args) -> None: # envoie dans le tchat 
 
             msg = f"{city} - {residence}\n{rent/100}€/mois\n{area}m²"
             await context.send(msg)
+    
+    statbuf = os.stat("../available.json")
+    last_mod = statbuf.st_mtime
+    await context.send(f"Dernière mise à jour des données: {time.ctime(last_mod)}")
 
 
 @client.command()

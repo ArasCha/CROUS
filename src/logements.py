@@ -15,19 +15,23 @@ wishes = [
 
 async def prg() -> None:
 
-    data = get_data()
+    try:
+        data = get_data()
 
-    if data is None:
-        await tell_no_token()
-        return
+        if data is None:
+            await tell_no_token()
+            return
 
-    with open("../available.json", "w") as f:
-        new_data = json.dumps(data)
-        f.write(new_data)
-    
-    filtered_data = filter_data(data)
+        with open("../available.json", "w") as f:
+            new_data = json.dumps(data)
+            f.write(new_data)
+        
+        filtered_data = filter_data(data)
 
-    await make_msg(filtered_data)
+        await make_msg(filtered_data)
+
+    except:
+        pass
 
 
 def filter_data(data:list[dict]) -> list[dict]: # keeps only wished accomodations

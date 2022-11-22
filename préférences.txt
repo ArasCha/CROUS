@@ -2,16 +2,16 @@
 - 36 rue des Landes
 - 28min Polytech
 - 55min CIMPA
-- 260€
+- 260€ + électricité à payer
 - 18m²
-- Parking gratuit, Laverie
+- Parking gratuit, Laverie, logement accessible qu'aux étudiants
 
 
 ## Résidence Alice Milliat
 - 13 rue du Freshe Blanc
 - 23min Polytech
 - 50min CIMPA
-- 298€
+- 298€ + électricité à payer
 - 18m²
 - Parking payant, Laverie
 
@@ -20,7 +20,7 @@
 - 7 Rue des Renards
 - 29min Polytech
 - 56min CIMPA
-- 255€
+- 255€ toutes charges comprises
 - 9m²
 - Salle de sports, Bibliothèque, Parking gratuit, Laverie
 
@@ -29,9 +29,18 @@
 - 1 Rue Henri Lasne
 - 29min Polytech
 - 47min CIMPA
-- 255€
+- 255€ toutes charges comprises
 - 9m²
 - Parking gratuit, Laverie
+
+
+## Résidence les Jardins d'Augustin
+- 8 rue de la Carterie
+- 43 min de Polytech
+- 46 min de Cimpa
+- 250€
+- 19m²
+- Pas de parking ni de laverie et il faut aider des personnes âgées et n'est accessible qu'aux boursiers
 
 
 ## Cité U Launay Violette

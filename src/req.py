@@ -6,7 +6,7 @@ def get_data() -> list[dict]:
 
     config = dotenv_values(".env")
     
-    url = 'https://trouverunlogement.lescrous.fr/api/fr/search/26'
+    url = 'https://trouverunlogement.lescrous.fr/api/fr/search/27'
 
     headers = {
         "accept": "application/ld+json, application/json",

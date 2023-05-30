@@ -1,5 +1,6 @@
 import requests
 from dotenv import dotenv_values
+import json
 
 
 def get_data() -> list[dict]:
@@ -34,3 +35,11 @@ def get_data() -> list[dict]:
         return None
 
     return accom_list
+
+
+def get_data_simulation() -> list[dict]:
+
+    with open("../available.json", "r", encoding="utf-8") as f:
+        content = f.read()
+    
+    return json.loads(content)

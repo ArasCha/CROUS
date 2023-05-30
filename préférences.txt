@@ -4,7 +4,7 @@
 - 55min CIMPA
 - 260€ + électricité à payer
 - 18m²
-- Parking gratuit, Laverie, logement accessible qu'aux étudiants
+- Parking gratuit, Laverie, logement accessible qu'aux boursiers
 
 
 ## Résidence Alice Milliat
@@ -16,15 +16,6 @@
 - Parking payant, Laverie
 
 
-## Cité U La Bourgeonnière
-- 7 Rue des Renards
-- 29min Polytech
-- 56min CIMPA
-- 255€ toutes charges comprises
-- 9m²
-- Salle de sports, Bibliothèque, Parking gratuit, Laverie
-
-
 ## Cité U Chanzy
 - 1 Rue Henri Lasne
 - 29min Polytech
@@ -32,6 +23,15 @@
 - 255€ toutes charges comprises
 - 9m²
 - Parking gratuit, Laverie
+
+
+## Cité U La Bourgeonnière
+- 7 Rue des Renards
+- 29min Polytech
+- 56min CIMPA
+- 255€ toutes charges comprises
+- 9m²
+- Salle de sports pas ouf, Bibliothèque, Parking gratuit, Laverie
 
 
 ## Résidence les Jardins d'Augustin

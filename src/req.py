@@ -5,9 +5,17 @@ import json
 
 def get_data() -> list[dict]:
 
-    config = dotenv_values(".env")
-    
-    url = 'https://trouverunlogement.lescrous.fr/api/fr/search/27'
+    token = dotenv_values(".env")["CROUS_TOKEN"]
+
+    data = request(token, 27)
+    data.append(request(token, 29))
+
+    return data
+
+
+def request(token: str, api_version: int) -> list[dict]:
+
+    url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{api_version}'
 
     headers = {
         "accept": "application/ld+json, application/json",
@@ -19,20 +27,17 @@ def get_data() -> list[dict]:
         "sec-fetch-dest": "empty",
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-origin",
-        "cookie": "SimpleSAMLSessionID=7cf93d422831c329e57766caeb86ec57; HAPROXYID=app4; PHPSESSID="+ config["CROUS_TOKEN"] + "; qpid=cb78nvjfm5tsme57c3cg",
-        "Referer": "https://trouverunlogement.lescrous.fr/tools/residual/26/search",
+        "cookie": f"SimpleSAMLSessionID=7cf93d422831c329e57766caeb86ec57; HAPROXYID=app4; PHPSESSID={token}; qpid=cb78nvjfm5tsme57c3cg",
+        "Referer": f"https://trouverunlogement.lescrous.fr/tools/residual/{api_version}/search",
         "Referrer-Policy": "strict-origin-when-cross-origin"
     }
 
-    body= "{\"precision\":6,\"need_aggregation\":true,\"page\":1,\"pageSize\":1000,\"sector\":null,\"idTool\":26,\"occupationModes\":[],\"equipment\":[],\"price\":{\"min\":0,\"max\":null},\"location\":[{\"lon\":-5.4534,\"lat\":51.2683},{\"lon\":9.8678,\"lat\":41.2632}]}"
+    body= "{\"precision\":6,\"need_aggregation\":true,\"page\":1,\"pageSize\":1000,\"sector\":null,\"idTool\":"f"{api_version}"",\"occupationModes\":[],\"equipment\":[],\"price\":{\"min\":0,\"max\":null},\"location\":[{\"lon\":-5.4534,\"lat\":51.2683},{\"lon\":9.8678,\"lat\":41.2632}]}"
 
-    reponse = requests.post(url, headers=headers, data=body)
-    data = reponse.json()
+    response = requests.post(url, headers=headers, data=body)
+    data = response.json()
 
     accom_list = data['results']['items']
-
-    if len(accom_list) == 0:
-        return None
 
     return accom_list
 

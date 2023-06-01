@@ -17,7 +17,7 @@ wishes = [
 async def prg() -> None:
 
         try:
-            data = get_data()
+            data = await get_data()
         except TokenDead:
             await tell_no_token()
             return
@@ -45,10 +45,10 @@ def filter_data(data:list[dict]) -> list[dict]: # keeps only wished accomodation
     return filtered
 
 
-def is_token_ok(token:str) -> bool:
+async def is_token_ok(token:str) -> bool:
 
     try:
-        request(token, 27)
+        await request(token, 27)
     except TokenDead:
         return False
     return True

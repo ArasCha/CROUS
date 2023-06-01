@@ -72,7 +72,7 @@ async def start(context:commands.Context) -> None:
 @client.command()
 async def token(context:commands.Context, token) -> None:
 
-    if is_token_ok(token):
+    if await is_token_ok(token):
         set_key(".env", "CROUS_TOKEN", token)
         await context.send("Ce token fonctionne")
     else:

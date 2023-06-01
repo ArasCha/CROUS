@@ -1,19 +1,19 @@
-import requests
-from requests import structures
+import aiohttp
 from dotenv import dotenv_values
 import json
 
 
-def get_data() -> list[dict]:
+async def get_data() -> list[dict]:
 
     token = dotenv_values(".env")["CROUS_TOKEN"]
 
-    data = request(token, 27) + request(token, 29) # year 2022-2023 and 2023-2024
+    data = await request(token, 27) + await request(token, 29) # year 2022-2023 and 2023-2024
+    print(len(data))
 
     return data
 
 
-def request(token: str, api_version: int) -> list[dict]:
+async def request(token: str, api_version: int) -> list[dict]:
 
     url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{api_version}'
 
@@ -37,19 +37,17 @@ def request(token: str, api_version: int) -> list[dict]:
 
     body= "{\"precision\":6,\"need_aggregation\":true,\"page\":1,\"pageSize\":"f"{max_size}"",\"sector\":null,\"idTool\":"f"{api_version}"",\"occupationModes\":[],\"equipment\":[],\"price\":{\"min\":0,\"max\":null},\"location\":[{\"lon\":-5.4534,\"lat\":51.2683},{\"lon\":9.8678,\"lat\":41.2632}]}"
 
-    response = requests.post(url, headers=headers, data=body)
+    async with aiohttp.ClientSession(headers=headers) as session:
+        async with session.post(url, data=body) as response:
+            check_token(response.headers)
+            try:
+                data = await response.json()
+            except aiohttp.client_exceptions.ContentTypeError:
+                print(f"Nothing in the response (litterally nothing) by requesting the api {api_version}, the provided size of {max_size} is too big")
+                return []
     
-    check_token(response.headers)
 
-    try:
-        data = response.json()
-    except json.decoder.JSONDecodeError:
-        print(f"Nothing in the response (litterally nothing) by requesting the api {api_version} with token {token} and a size of {max_size}")
-        return []
-
-    accom_list = data['results']['items']
-
-    return accom_list
+    return data['results']['items']
 
 
 def get_data_simulation() -> list[dict]:
@@ -60,11 +58,11 @@ def get_data_simulation() -> list[dict]:
     return json.loads(content)
 
 
-def check_token(headers: structures.CaseInsensitiveDict):
+def check_token(headers: aiohttp.ClientResponse.headers):
 
-    cookies = headers['set-cookie']
+    # there are many ['set-cookie'] in the headers get with aiohttp
 
-    if "SimpleSAMLSessionID" in cookies:
+    if "SimpleSAMLSessionID" in str(headers):
         raise TokenDead
     
 

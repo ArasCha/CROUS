@@ -1,5 +1,5 @@
 from msg import *
-from req import get_data, get_data_simulation, TokenDead
+from req import get_data, get_data_simulation, TokenDead, request
 import re
 import json
 
@@ -45,9 +45,10 @@ def filter_data(data:list[dict]) -> list[dict]: # keeps only wished accomodation
     return filtered
 
 
-def test_req() -> bool:
+def is_token_ok(token:str) -> bool:
 
-    data = get_data()
-
-    if data is None: return False
-    else: return True
+    try:
+        request(token, 27)
+    except TokenDead:
+        return False
+    return True

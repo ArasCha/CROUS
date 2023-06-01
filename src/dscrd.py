@@ -1,7 +1,7 @@
 import json
 import discord
 from datetime import datetime
-from logements import prg, test_req
+from logements import prg, is_token_ok
 from dotenv import dotenv_values, set_key
 from discord.ext import commands
 import asyncio
@@ -72,8 +72,8 @@ async def start(context:commands.Context) -> None:
 @client.command()
 async def token(context:commands.Context, token) -> None:
 
-    set_key(".env", "CROUS_TOKEN", token)
-    if test_req():
+    if is_token_ok(token):
+        set_key(".env", "CROUS_TOKEN", token)
         await context.send("Ce token fonctionne")
     else:
         await context.send("Ce token ne fonctionne pas")

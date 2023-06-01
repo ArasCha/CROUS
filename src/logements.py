@@ -14,10 +14,13 @@ wishes = [
 }
 ]
 
+api_versions = [27, 29]
+
+
 async def prg() -> None:
 
         try:
-            data = await get_data()
+            data = await get_data(api_versions)
         except TokenDead:
             await tell_no_token()
             return
@@ -48,7 +51,7 @@ def is_wished(acc:dict) -> bool:
 async def is_token_ok(token:str) -> bool:
 
     try:
-        await request(token, 27)
+        await get_data([27], token=token)
     except TokenDead:
         return False
     return True

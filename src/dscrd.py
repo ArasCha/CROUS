@@ -107,8 +107,7 @@ async def city(context:commands.Context, *args) -> None: # envoie dans le tchat 
 @client.command()
 async def clear(context:commands.Context, nb) -> None: # delete the last nb messages
 
-    channel: discord.TextChannel = client.get_channel(996707470556803099)
-    messages: list[discord.Message] = await get_previous_msgs(channel)
+    messages: list[discord.Message] = await get_previous_msgs(context.channel)
 
     nb = int(nb)
 
@@ -116,7 +115,12 @@ async def clear(context:commands.Context, nb) -> None: # delete the last nb mess
         nb = len(messages)
 
     for i in range(nb):
-        await messages[i].delete()
+        try:
+            await messages[i].delete()
+        except discord.errors.HTTPException:
+            print("discord.errors.HTTPException: currently waiting and retrying")
+            await asyncio.sleep(5)
+            await messages[i].delete()
 
 
 #-------------------------------------FUNCTIONS-----------------------------------------

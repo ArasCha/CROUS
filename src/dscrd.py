@@ -28,13 +28,13 @@ async def on_ready() -> None: # lorsque l'on a lancé le bot par client.run()
     
     print("Bot ready")
 
-    async def issou():
+    async def loop():
         while True:
             if running:
                 await prg()
-            await asyncio.sleep(60)
+            await asyncio.sleep(120)
     
-    prog = asyncio.create_task(issou())
+    prog = asyncio.create_task(loop())
 
 
 #---------------------------------------COMMANDS-----------------------------------------

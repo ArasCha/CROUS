@@ -69,11 +69,11 @@ def get_data_simulation() -> list[dict]:
 
 def check_token(headers: aiohttp.ClientResponse.headers):
 
-    # there are many ['set-cookie'] in the headers get with aiohttp
+    # there are many ['set-cookie'] in the headers got with aiohttp
 
     if "SimpleSAMLSessionID" in str(headers):
         raise TokenDead
-    
+
 
 class TokenDead(Exception):
     pass

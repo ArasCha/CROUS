@@ -26,23 +26,23 @@ async def prg() -> None:
             new_data = json.dumps(data)
             f.write(new_data)
         
-        filtered_data = filter_data(data)
+        filtered_data = list(filter(is_wished, data))
 
         await make_msg(filtered_data)
 
 
 
-def filter_data(data:list[dict]) -> list[dict]: # keeps only wished accomodations
-
-    filtered = []
+def is_wished(acc:dict) -> bool:
+    """
+    Filter accomodations that aren't relevant to wishes
+    acc: Data of an accomodation
+    """
 
     for wish in wishes:
+        if re.search(wish["residence"], acc["residence"]["label"], re.IGNORECASE):
+            return True
+    return False
 
-        for acc in data:
-            if re.search(wish["residence"], acc["residence"]["label"], re.IGNORECASE):
-                filtered.append(acc)
-    
-    return filtered
 
 
 async def is_token_ok(token:str) -> bool:

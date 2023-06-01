@@ -7,16 +7,6 @@ async def get_data() -> list[dict]:
 
     token = dotenv_values(".env")["CROUS_TOKEN"]
 
-    data = await request(token, 27) + await request(token, 29) # year 2022-2023 and 2023-2024
-    print(len(data))
-
-    return data
-
-
-async def request(token: str, api_version: int) -> list[dict]:
-
-    url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{api_version}'
-
     headers = {
         "accept": "application/ld+json, application/json",
         "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -28,26 +18,45 @@ async def request(token: str, api_version: int) -> list[dict]:
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-origin",
         "cookie": f"SimpleSAMLSessionID=7cf93d422831c329e57766caeb86ec57; HAPROXYID=app4; PHPSESSID={token}; qpid=cb78nvjfm5tsme57c3cg",
-        "Referer": f"https://trouverunlogement.lescrous.fr/tools/residual/{api_version}/search",
+        "Referer": f"https://trouverunlogement.lescrous.fr/tools/residual/27/search",
         "Referrer-Policy": "strict-origin-when-cross-origin"
     }
 
-    max_size = 1235
-    # If there is more than 1235 accomodations available on the api, if we ask more than 1235 the api sends no content back
-
-    body= "{\"precision\":6,\"need_aggregation\":true,\"page\":1,\"pageSize\":"f"{max_size}"",\"sector\":null,\"idTool\":"f"{api_version}"",\"occupationModes\":[],\"equipment\":[],\"price\":{\"min\":0,\"max\":null},\"location\":[{\"lon\":-5.4534,\"lat\":51.2683},{\"lon\":9.8678,\"lat\":41.2632}]}"
+    api_versions = [27, 29] # year 2022-2023 and 2023-2024
+    data = []
 
     async with aiohttp.ClientSession(headers=headers) as session:
-        async with session.post(url, data=body) as response:
-            check_token(response.headers)
-            try:
-                data = await response.json()
-            except aiohttp.client_exceptions.ContentTypeError:
-                print(f"Nothing in the response (litterally nothing) by requesting the api {api_version}, the provided size of {max_size} is too big")
-                return []
+        for api_version in api_versions:
+            data += await request(session, api_version)
     
+    return data
 
-    return data['results']['items']
+
+async def request(session: aiohttp.ClientSession , api_version: int, page=1) -> list[dict]:
+    """
+    api_version: 27 means year 2022-2023 and 29 2023-2024
+    page: sometimes there are more free accomodations than what it is possible to display on one page, so many pages are needed. While our current page is not empty, we request the next page.
+    """
+
+    url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{api_version}'
+
+    max_page_size = 1200
+    # If there is more than 1235 accomodations available on the api, if we ask more than 1235 the api sends no content back
+
+    body= "{\"precision\":6,\"need_aggregation\":true,\"page\":"f"{page}"",\"pageSize\":"f"{max_page_size}"",\"sector\":null,\"idTool\":"f"{api_version}"",\"occupationModes\":[],\"equipment\":[],\"price\":{\"min\":0,\"max\":null},\"location\":[{\"lon\":-5.4534,\"lat\":51.2683},{\"lon\":9.8678,\"lat\":41.2632}]}"
+
+    async with session.post(url, data=body) as response:
+        check_token(response.headers)
+        try:
+            data = await response.json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            print(f"Nothing in the response (litterally nothing) by requesting the api {api_version}, the provided size of {max_page_size} is too big")
+            return []
+        
+    if data['results']['items'] == []:
+        return []
+
+    return data['results']['items'] + await request(session, api_version, page=page+1)
 
 
 def get_data_simulation() -> list[dict]:

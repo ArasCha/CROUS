@@ -1,5 +1,5 @@
 from msg import *
-from req import get_data, get_data_simulation
+from req import get_data, get_data_simulation, TokenDead
 import re
 import json
 
@@ -16,9 +16,9 @@ wishes = [
 
 async def prg() -> None:
 
-        data = get_data()
-
-        if data is None:
+        try:
+            data = get_data()
+        except TokenDead:
             await tell_no_token()
             return
 

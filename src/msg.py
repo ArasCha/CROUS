@@ -13,5 +13,7 @@ async def make_msg(accomodations: list[dict]) -> None:
         await dscrd.notifier(f"**Nouveau Logement**:\n{city} - {residence}\n{rent/100}€/mois\n{area}m²\n{booking_link}")
 
 async def tell_no_token() -> None:
-
     await dscrd.send_msg("**Le token est mort**")
+
+async def tell_error(error: Exception) -> None:
+    await dscrd.send_msg(f"Une erreur est survenue:\n{str(error)}")

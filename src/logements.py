@@ -14,24 +14,26 @@ wishes = [
 }
 ]
 
-api_versions = [27, 29]
+api_versions = [27, 31]
 
 
 async def prg() -> None:
 
-        try:
-            data = await get_data(api_versions)
-        except TokenDead:
-            await tell_no_token()
-            return
+    try:
+        data = await get_data(api_versions)
+    except TokenDead:
+        await tell_no_token()
+        return
+    except Exception as error:
+        await tell_error(error)
 
-        with open("../available.json", "w", encoding="utf-8") as f:
-            new_data = json.dumps(data)
-            f.write(new_data)
-        
-        filtered_data = list(filter(is_wished, data))
+    with open("../available.json", "w", encoding="utf-8") as f:
+        new_data = json.dumps(data)
+        f.write(new_data)
+    
+    filtered_data = list(filter(is_wished, data))
 
-        await make_msg(filtered_data)
+    await make_msg(filtered_data)
 
 
 
@@ -51,7 +53,7 @@ def is_wished(acc:dict) -> bool:
 async def is_token_ok(token:str) -> bool:
 
     try:
-        await get_data([27], token=token)
+        await get_data([api_versions[0]], token=token)
     except TokenDead:
         return False
     return True

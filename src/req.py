@@ -3,7 +3,7 @@ from dotenv import dotenv_values
 import json
 
 
-async def get_data(api_versions:list[int], token:str=None, max_page_size=1200) -> list[dict]:
+async def get_data(api_versions:list[int], token:str=None, max_page_size=1100) -> list[dict]:
     """
     If there is more than 1235 accomodations available on the api, if we ask more than 1235 the api sends no content back because too much was requested
     Provide token if you need to test it
@@ -36,7 +36,7 @@ async def get_data(api_versions:list[int], token:str=None, max_page_size=1200) -
 
 async def request(session: aiohttp.ClientSession, api_version: int, max_page_size: int, page=1) -> list[dict]:
     """
-    api_version: 27 means year 2022-2023 and 29 2023-2024
+    api_version: 27 means year 2022-2023 and 31 year 2023-2024
     page: sometimes there are more free accomodations than what it is possible to display on one page, so many pages are needed. While our current page is not empty, we request the next page.
     """
 

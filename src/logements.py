@@ -7,33 +7,38 @@ import json
 wishes = [
 {
     "city": "Nantes",
-    "max_price": 30000, # 30000 means actually 300,00€
-    "min_area": 9,
-    "bedCount": 1,
     "residence": "Chanzy"
+},
+{
+    "city": "Nantes",
+    "residence": "Bourgeonnière"
+},
+{
+    "city": "Nantes",
+    "residence": "FRESCHE"
 }
 ]
 
-api_versions = [27, 31]
+api_versions = [31]
 
 
 async def prg() -> None:
 
     try:
         data = await get_data(api_versions)
+        
+        with open("../available.json", "w", encoding="utf-8") as f:
+            new_data = json.dumps(data)
+            f.write(new_data)
+        
+        filtered_data = list(filter(is_wished, data))
+        await make_msg(filtered_data)
+
     except TokenDead:
         await tell_no_token()
         return
     except Exception as error:
         await tell_error(error)
-
-    with open("../available.json", "w", encoding="utf-8") as f:
-        new_data = json.dumps(data)
-        f.write(new_data)
-    
-    filtered_data = list(filter(is_wished, data))
-
-    await make_msg(filtered_data)
 
 
 
@@ -44,8 +49,9 @@ def is_wished(acc:dict) -> bool:
     """
 
     for wish in wishes:
-        if re.search(wish["residence"], acc["residence"]["label"], re.IGNORECASE):
-            return True
+        if re.search(wish["city"], acc["residence"]["sector"]["label"]):
+            if re.search(wish["residence"], acc["residence"]["label"], re.IGNORECASE):
+                return True
     return False
 
 

@@ -3,7 +3,7 @@ from dotenv import dotenv_values
 import json
 
 
-async def get_data(api_versions:list[int], token:str=None, max_page_size=1100) -> list[dict]:
+async def get_data(api_versions:list[int], token:str=None, max_page_size=1) -> list[dict]:
     """
     If there is more than 1235 accomodations available on the api, if we ask more than 1235 the api sends no content back because too much was requested
     Provide token if you need to test it
@@ -35,22 +35,20 @@ async def get_data(api_versions:list[int], token:str=None, max_page_size=1100) -
 
 
 async def request(session: aiohttp.ClientSession, api_version: int, max_page_size: int, page=1) -> list[dict]:
-    """
-    api_version: 27 means year 2022-2023 and 31 year 2023-2024
-    page: sometimes there are more free accomodations than what it is possible to display on one page, so many pages are needed. While our current page is not empty, we request the next page.
-    """
 
     url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{api_version}'
     body= "{\"precision\":6,\"need_aggregation\":true,\"page\":"f"{page}"",\"pageSize\":"f"{max_page_size}"",\"sector\":null,\"idTool\":"f"{api_version}"",\"occupationModes\":[],\"equipment\":[],\"price\":{\"min\":0,\"max\":null},\"location\":[{\"lon\":-5.4534,\"lat\":51.2683},{\"lon\":9.8678,\"lat\":41.2632}]}"
 
     async with session.post(url, data=body) as response:
+        print("HEADERS:", response.headers)
         check_token(response.headers)
         try:
             data = await response.json()
+            print(json.dumps(data))
         except aiohttp.client_exceptions.ContentTypeError:
             print(f"Nothing in the response (litterally nothing) by requesting the api {api_version}, the provided size of {max_page_size} is too big")
             return []
-        
+
     if data['results']['items'] == []:
         return []
 
@@ -75,3 +73,48 @@ def check_token(headers: aiohttp.ClientResponse.headers):
 
 class TokenDead(Exception):
     pass
+
+
+
+
+
+
+"""
+Requête pour 2024-2025 qui outre-passe la trop grosse quantité de requêtes (navigation privée):
+
+fetch("https://trouverunlogement.lescrous.fr/api/fr/search/36", {
+  "headers": {
+    "accept": "application/ld+json, application/json",
+    "accept-language": "fr",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Microsoft Edge\";v=\"126\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin"
+  },
+  "referrer": "https://trouverunlogement.lescrous.fr/",
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": "{\"idTool\":36,\"need_aggregation\":true,\"page\":1,\"pageSize\":24,\"sector\":null,\"occupationModes\":[],\"location\":[{\"lon\":2.224122,\"lat\":48.902156},{\"lon\":2.4697602,\"lat\":48.8155755}],\"residence\":null,\"precision\":6,\"equipment\":[],\"adaptedPmr\":false,\"toolMechanism\":\"residual\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+});
+"""
+
+"""
+Entetes de réponse sans Token:
+
+HTTP/1.1 200 OK
+cache-control: max-age=0, must-revalidate, private
+content-type: application/json
+date: Mon, 15 Jul 2024 12:10:19 GMT
+expires: Mon, 15 Jul 2024 12:10:19 GMT
+server: Apache
+strict-transport-security: max-age=15768000
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+transfer-encoding: chunked
+"""

@@ -1,4 +1,4 @@
-from msg import *
+# from msg import *
 from req import get_data, get_data_simulation, TokenDead, request
 import re
 import json
@@ -19,7 +19,12 @@ wishes = [
 }
 ]
 
-api_versions = [31]
+api_versions = [36]
+"""
+api_version: 27 means year 2022-2023 and 31 year 2023-2024 (32 is 2023-2024 but for the civil year 2024)
+page: sometimes there are more free accomodations than what it is possible to display on one page, so many pages are needed. While our current page is not empty, we request the next page.
+36 for 2024-2025
+"""
 
 
 async def prg() -> None:
@@ -32,13 +37,16 @@ async def prg() -> None:
             f.write(new_data)
         
         filtered_data = list(filter(is_wished, data))
-        await make_msg(filtered_data)
+        # await make_msg(filtered_data)
+        print("logements voulus libres:", filtered_data)
 
     except TokenDead:
-        await tell_no_token()
+        # await tell_no_token()
+        print("TOKEN DEAD")
         return
     except Exception as error:
-        await tell_error(error)
+        # await tell_error(error)
+        print("ERREUR:", error)
 
 
 
@@ -63,3 +71,16 @@ async def is_token_ok(token:str) -> bool:
     except TokenDead:
         return False
     return True
+
+
+import asyncio
+
+async def main():
+    
+    while True:
+        await prg()
+        print("FINIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+        await asyncio.sleep(10)
+
+if __name__ == "__main__":
+    asyncio.run(main())

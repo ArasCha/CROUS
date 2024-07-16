@@ -1,23 +1,13 @@
-# from msg import *
+from msg import *
 from req import get_data, get_data_simulation, TokenDead, request
 import re
 import json
+import traceback
 
 
-wishes = [
-{
-    "city": "Nantes",
-    "residence": "Chanzy"
-},
-{
-    "city": "Nantes",
-    "residence": "Bourgeonnière"
-},
-{
-    "city": "Nantes",
-    "residence": "FRESCHE"
+wish = {
+    "bedCount": 1
 }
-]
 
 api_versions = [36]
 """
@@ -36,18 +26,15 @@ async def prg() -> None:
             new_data = json.dumps(data)
             f.write(new_data)
         
-        filtered_data = list(filter(is_wished, data))
-        # await make_msg(filtered_data)
-        print("logements voulus libres:", filtered_data)
+        filtered_data = filter(is_wished, data)
+        await make_msg(data)
 
     except TokenDead:
-        # await tell_no_token()
-        print("TOKEN DEAD")
+        await tell_no_token()
         return
     except Exception as error:
-        # await tell_error(error)
-        print("ERREUR:", error)
-
+        error_traceback = traceback.format_exc()
+        await tell_error(error_traceback)
 
 
 def is_wished(acc:dict) -> bool:
@@ -57,8 +44,8 @@ def is_wished(acc:dict) -> bool:
     """
 
     for wish in wishes:
-        if re.search(wish["city"], acc["residence"]["sector"]["label"]):
-            if re.search(wish["residence"], acc["residence"]["label"], re.IGNORECASE):
+        if wish["bedCount"] == acc["bedCount"]:
+            # if re.search(wish["residence"], acc["residence"]["label"], re.IGNORECASE):
                 return True
     return False
 
@@ -71,16 +58,3 @@ async def is_token_ok(token:str) -> bool:
     except TokenDead:
         return False
     return True
-
-
-import asyncio
-
-async def main():
-    
-    while True:
-        await prg()
-        print("FINIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-        await asyncio.sleep(10)
-
-if __name__ == "__main__":
-    asyncio.run(main())

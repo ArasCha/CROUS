@@ -32,7 +32,7 @@ async def on_ready() -> None: # lorsque l'on a lancé le bot par client.run()
         while True:
             if running:
                 await prg()
-            await asyncio.sleep(120)
+            await asyncio.sleep(60)
     
     prog = asyncio.create_task(loop())
 

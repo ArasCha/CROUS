@@ -42,6 +42,8 @@ class CrousSession:
     async def test_token(self, token:str) -> bool:
         
         headers = self.get_headers(token)
+        url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{self.api_version}'
+        body = "{\"idTool\":"f"{self.api_version}"",\"need_aggregation\":true,\"page\":1,\"pageSize\":1,\"sector\":null,\"occupationModes\":"f"{occupation_mode}"",\"location\":"f"{ile_de_france_bounds}"",\"residence\":null,\"precision\":6,\"equipment\":[],\"adaptedPmr\":false,\"toolMechanism\":\"residual\"}"
         
         async with aiohttp.ClientSession(headers=headers) as session:
             async with session.post(url, data=body) as response:

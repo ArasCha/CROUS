@@ -39,7 +39,8 @@ async def prg() -> None:
 
 
 async def is_token_ok(token:str) -> bool:
-    return await crous_session.test_token(token)
+    async with CrousSession(36) as crous:
+        return await crous.test_token(token)
 
 
 def is_bookable(accommodation: dict) -> list:

@@ -23,13 +23,20 @@ async def prg() -> None:
                 new_data = json.dumps(free_acc)
                 f.write(new_data)
             
-            [await crous._add_accommodation_to_selection(acc["id"]) for acc in free_acc]
-            [await tell_accommodation_listed(acc) for acc in free_acc]
+            listable_acc = list(filter(is_listable, free_acc))
+            cart = await crous.get_cart()
+            cart_add_ids = [acc["accommodation"]["id"] for acc in cart]
             
-            bookable_acc = list(filter(is_bookable, free_acc))
-            [await crous.book_accommodation(acc["id"]) for acc in bookable_acc]
-            [await tell_accommodation_booked(acc) for acc in bookable_acc]
+            listable_acc_filtered = list(filter(lambda acc: acc["id"] not in cart_add_ids, listable_acc))
+            
+            for acc in listable_acc_filtered:
+                
+                await crous._add_accommodation_to_selection(acc["id"])
+                await tell_accommodation_listed(acc)
 
+                if is_bookable(acc):
+                    await crous.book_accommodation(acc["id"])
+                    await tell_accommodation_booked(acc)
 
         except TokenDead:
             await tell_no_token()
@@ -49,3 +56,10 @@ def is_bookable(accommodation: dict) -> list:
     address = accommodation["residence"]["address"]
     
     return any(post_code in address for post_code in post_codes)
+
+def is_listable(accommodation: dict) -> list:
+    
+    pattern = re.compile(r"\b75\d{3}\b")
+    address = accommodation["residence"]["address"]
+
+    return pattern.search(address)

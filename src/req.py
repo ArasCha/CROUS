@@ -109,6 +109,15 @@ class CrousSession:
                 raise Exception(f"Error while booking accommodation {accommodation_id}:\n\n{await response.text()}")
 
 
+    async def get_cart(self):
+        
+        url = f"https://trouverunlogement.lescrous.fr/api/fr/tools/{self.api_version}/cart"
+        
+        async with self.session.get(url) as response:
+            data =  await response.json()
+            return data["items"]
+
+
 def get_data_simulation() -> list[dict]:
 
     with open("../available.json", "r", encoding="utf-8") as f:

@@ -3,7 +3,6 @@ from dotenv import dotenv_values
 import json
 
 ile_de_france_bounds = "[{\"lon\":1.8759155273437502,\"lat\":49.017157315497165},{\"lon\":2.9278564453125,\"lat\":48.671012624325996}]"
-orleans_bounds = "[{\"lon\":1.8355680963101053,\"lat\":47.92474001024498},{\"lon\":1.942341472774949,\"lat\":47.88066424009748}]"
 occupation_mode = "[\"alone\"]"
 
 
@@ -59,7 +58,7 @@ class CrousSession:
         """
 
         url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{self.api_version}'
-        body = "{\"idTool\":"f"{self.api_version}"",\"need_aggregation\":true,\"page\":"f"{page}"",\"pageSize\":"f"{max_page_size}"",\"sector\":null,\"occupationModes\":"f"{occupation_mode}"",\"location\":"f"{orleans_bounds}"",\"residence\":null,\"precision\":6,\"equipment\":[],\"adaptedPmr\":false,\"toolMechanism\":\"residual\"}"
+        body = "{\"idTool\":"f"{self.api_version}"",\"need_aggregation\":true,\"page\":"f"{page}"",\"pageSize\":"f"{max_page_size}"",\"sector\":null,\"occupationModes\":"f"{occupation_mode}"",\"location\":"f"{ile_de_france_bounds}"",\"residence\":null,\"precision\":6,\"equipment\":[],\"adaptedPmr\":false,\"toolMechanism\":\"residual\"}"
 
         async with self.session.post(url, data=body) as response:
             
@@ -76,19 +75,19 @@ class CrousSession:
         return data['results']['items'] + await self.get_free_accommodations(max_page_size, page=page+1)
     
     
-    async def add_accommodation_to_selection(self, accommodation_id: int): # works
+    async def _add_accommodation_to_selection(self, accommodation_id: int):
     
         url = f"https://trouverunlogement.lescrous.fr/api/fr/tools/{self.api_version}/carts/5112591/items"
         body = "{\"accommodation\":"f"{accommodation_id}""}"
         
         async with self.session.post(url, data=body) as response:
-            if response.status == 200:
-                print(accommodation_id, "added to selection")
-                
-            else: print("error while adding", accommodation_id, "to selection", response.text)
+            if response.status != 200:
+                raise Exception(f"Error while adding accommodation {accommodation_id} to selection:\n\n{await response.text()}")
 
 
     async def book_accommodation(self, accommodation_id: int):
+        
+        # await self._add_accommodation_to_selection(accommodation_id) # should already be listed in prg()
 
         url = f"https://trouverunlogement.lescrous.fr/api/fr/tools/{self.api_version}/requests"
         body  = (
@@ -102,14 +101,10 @@ class CrousSession:
         )
         
         self.session.headers["content-type"] = "multipart/form-data; boundary=----WebKitFormBoundaryIjfClOzXWcnYRqci"
-        print(self.session.headers)
         
         async with self.session.post(url, data=body) as response:
-            if response.status == 200:
-                print(accommodation_id, "booked")
-                
-            else: print("error while booking", accommodation_id, await response.text())
-
+            if response.status != 200:
+                raise Exception(f"Error while booking accommodation {accommodation_id}:\n\n{await response.text()}")
 
 
 def get_data_simulation() -> list[dict]:
@@ -128,58 +123,3 @@ def check_token(headers: aiohttp.ClientResponse.headers):
 
 class TokenDead(Exception):
     pass
-
-
-async def test():
-    
-    headers = {
-        "accept": "*/*",
-        "accept-language": "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,de-DE;q=0.5,de;q=0.4",
-        "content-type": "multipart/form-data; boundary=----WebKitFormBoundaryIjfClOzXWcnYRqci",
-        "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Microsoft Edge\";v=\"126\"",
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "\"Windows\"",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-        "cookie": "HAPROXYID=app4; qpid=cqbolujfm5tsvkt479o0; PHPSESSID=rv2p555cj5srbva67v4ugasgfj",
-        "Referer": "https://trouverunlogement.lescrous.fr/tools/36/cart/requests/create/1314",
-        "Referrer-Policy": "strict-origin-when-cross-origin"
-    }
-    
-    async with aiohttp.ClientSession(headers=headers) as session:
-        
-        url = "https://trouverunlogement.lescrous.fr/api/fr/tools/36/requests"
-
-        accommodation_id = 1314
-        data = (
-            "------WebKitFormBoundaryIjfClOzXWcnYRqci\r\n"
-            "Content-Disposition: form-data; name=\"request_submit[occupationMode]\"\r\n\r\n"
-            "alone\r\n"
-            "------WebKitFormBoundaryIjfClOzXWcnYRqci\r\n"
-            f"Content-Disposition: form-data; name=\"accommodation\"\r\n\r\n"
-            f"{accommodation_id}\r\n"
-            "------WebKitFormBoundaryIjfClOzXWcnYRqci--\r\n"
-        )
-        
-        async with session.post(url, data=data) as response:
-            if response.status == 200:
-                print(await response.text())
-                print(await response.json())
-                print("booked")
-                
-            else:
-                print("error while booking", await response.json())
-
-
-import asyncio
-
-async def main():
-    
-    async with CrousSession(36) as crous:
-        # await crous.add_accommodation_to_selection(478)
-        await crous.book_accommodation(980)
-        # await test()
-    
-asyncio.run(main())
-

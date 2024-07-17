@@ -73,7 +73,7 @@ async def start(context:commands.Context) -> None:
 async def token(context:commands.Context, token) -> None:
 
     if await is_token_ok(token):
-        set_key(".env", "CROUS_TOKEN", token)
+        set_key("../.env", "CROUS_TOKEN", token)
         await context.send("Ce token fonctionne")
     else:
         await context.send("Ce token ne fonctionne pas")
@@ -168,5 +168,5 @@ async def already_sent(msg:str, channel:discord.TextChannel) -> bool:
 
 
 
-config = dotenv_values(".env")
+config = dotenv_values("../.env")
 client.run(config["DISCORD_BOT_TOKEN"])

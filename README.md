@@ -29,7 +29,7 @@ The bot points out when the token is dead
 
 Just after pulling the project:
 
-- create a `.env` file in the `src` folder. Inside:
+- create a `.env` file in the root folder. Inside:
 	- put the CROUS_TOKEN (the token of your messervices account)
 	- put the DISCORD_BOT_TOKEN
 
@@ -53,7 +53,7 @@ Just after pulling the project:
 	- password: my GitHub token
 
 - Creating the `.env` file:
-	- go the `src/` folder
+	- go at the root folder
 	- `sudo touch .env`
 	- `sudo nano .env`
 	- Write in the necessary content (explained above)

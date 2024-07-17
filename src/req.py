@@ -10,7 +10,7 @@ class CrousSession:
     
     def __init__(self, api_version: int):
         self.api_version = api_version
-        self.token = dotenv_values(".env")["CROUS_TOKEN"]
+        self.token = dotenv_values("../.env")["CROUS_TOKEN"]
         self.session: aiohttp.ClientSession = None
     
     async def __aenter__(self):

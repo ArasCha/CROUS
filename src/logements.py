@@ -24,10 +24,12 @@ async def prg() -> None:
                 f.write(new_data)
             
             listable_acc = list(filter(is_listable, free_acc))
-            cart = await crous.get_cart()
-            cart_add_ids = [acc["accommodation"]["id"] for acc in cart]
+            if not listable_acc: return #empty
             
-            listable_acc_filtered = list(filter(lambda acc: acc["id"] not in cart_add_ids, listable_acc))
+            cart = await crous.get_cart()
+            cart_acc_ids = [acc["accommodation"]["id"] for acc in cart]
+            
+            listable_acc_filtered = list(filter(lambda acc: acc["id"] not in cart_acc_ids, listable_acc))
             
             for acc in listable_acc_filtered:
                 
@@ -52,14 +54,14 @@ async def is_token_ok(token:str) -> bool:
 
 def is_bookable(accommodation: dict) -> list:
     
-    post_codes = ["75005","75006"]
+    pattern = re.compile(r"\b75\d{3}\b")
     address = accommodation["residence"]["address"]
     
-    return any(post_code in address for post_code in post_codes)
+    return pattern.search(address)
 
 def is_listable(accommodation: dict) -> list:
     
-    pattern = re.compile(r"\b75\d{3}\b")
+    pattern = re.compile(r"\b(75|92|93|94)\d{3}\b")
     address = accommodation["residence"]["address"]
 
     return pattern.search(address)

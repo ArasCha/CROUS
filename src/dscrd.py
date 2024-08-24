@@ -89,14 +89,14 @@ async def city(context:commands.Context, *args) -> None: # envoie dans le tchat 
         data = json.loads(f.read())
 
     for acc in data:
-        city = acc["residence"]["sector"]["label"]
-        if re.search(wished_city, city, re.IGNORECASE):
+        address = acc["residence"]["address"]
+        if re.search(wished_city, address, re.IGNORECASE):
 
             area = acc["area"]["max"]
             rent = acc["occupationModes"][0]["rent"]["max"]
             residence = acc["residence"]["label"]
 
-            msg = f"{city} - {residence}\n{rent/100}€/mois\n{area}m²"
+            msg = f"{address} - {residence}\n{rent/100}€/mois\n{area}m²"
             await context.send(msg)
     
     statbuf = os.stat("../available.json")

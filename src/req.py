@@ -3,6 +3,7 @@ from dotenv import dotenv_values
 import json
 
 ile_de_france_bounds = "[{\"lon\":1.8759155273437502,\"lat\":49.017157315497165},{\"lon\":2.9278564453125,\"lat\":48.671012624325996}]"
+metropolitan_france_bounds = "[{\"lon\":-9.9079,\"lat\":51.7087},{\"lon\":14.3224,\"lat\":40.5721}]"
 occupation_mode = "[\"alone\"]"
 
 
@@ -43,7 +44,7 @@ class CrousSession:
         
         headers = self.get_headers(token)
         url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{self.api_version}'
-        body = "{\"idTool\":"f"{self.api_version}"",\"need_aggregation\":true,\"page\":1,\"pageSize\":1,\"sector\":null,\"occupationModes\":"f"{occupation_mode}"",\"location\":"f"{ile_de_france_bounds}"",\"residence\":null,\"precision\":6,\"equipment\":[],\"adaptedPmr\":false,\"toolMechanism\":\"residual\"}"
+        body = "{\"idTool\":"f"{self.api_version}"",\"need_aggregation\":true,\"page\":1,\"pageSize\":1,\"sector\":null,\"occupationModes\":"f"{occupation_mode}"",\"location\":"f"{metropolitan_france_bounds}"",\"residence\":null,\"precision\":6,\"equipment\":[],\"adaptedPmr\":false,\"toolMechanism\":\"residual\"}"
         
         async with aiohttp.ClientSession(headers=headers) as session:
             async with session.post(url, data=body) as response:
@@ -60,7 +61,7 @@ class CrousSession:
         """
 
         url = f'https://trouverunlogement.lescrous.fr/api/fr/search/{self.api_version}'
-        body = "{\"idTool\":"f"{self.api_version}"",\"need_aggregation\":true,\"page\":"f"{page}"",\"pageSize\":"f"{max_page_size}"",\"sector\":null,\"occupationModes\":"f"{occupation_mode}"",\"location\":"f"{ile_de_france_bounds}"",\"residence\":null,\"precision\":6,\"equipment\":[],\"adaptedPmr\":false,\"toolMechanism\":\"residual\"}"
+        body = "{\"idTool\":"f"{self.api_version}"",\"need_aggregation\":true,\"page\":"f"{page}"",\"pageSize\":"f"{max_page_size}"",\"sector\":null,\"occupationModes\":"f"{occupation_mode}"",\"location\":"f"{metropolitan_france_bounds}"",\"residence\":null,\"precision\":6,\"equipment\":[],\"adaptedPmr\":false,\"toolMechanism\":\"residual\"}"
 
         async with self.session.post(url, data=body) as response:
             

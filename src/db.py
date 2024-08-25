@@ -2,6 +2,7 @@ import json
 from Accomodation import Accomodation
 import os
 import time
+import re
 
 db_file = "../available.json"
 status_file = "../status.json"

@@ -26,8 +26,5 @@ async def tell_accommodation_booked(accommodation) -> None:
     await dscrd.notifier(f"**Logement demandé**:\n{formatted_accommodation}")
     
 
-async def tell_no_token() -> None:
-    await dscrd.send_msg("**Le token est mort**")
-
-async def tell_error(error_traceback: str) -> None:
-    await dscrd.send_msg(f"Une erreur est survenue:\n{error_traceback}")
+async def tell_error(message: str) -> None:
+    await dscrd.notifier(message)

@@ -7,17 +7,10 @@ from discord.ext import commands
 import asyncio
 import re
 import os
-import time
+from db import DB
 
 
 client = commands.Bot(command_prefix = '!')
-
-running = True
-
-def set_running(val:bool) -> None:
-    import dscrd
-    dscrd.running = val
-
 
 #-----------------------------------------------------------------------------------------
 
@@ -27,10 +20,11 @@ def set_running(val:bool) -> None:
 async def on_ready() -> None: # lorsque l'on a lancé le bot par client.run()
     
     print("Bot ready")
+    await send_msg("Programme démarré")
 
     async def loop():
         while True:
-            if running:
+            if DB.get_program_status():
                 await prg()
             await asyncio.sleep(30)
     
@@ -43,28 +37,31 @@ async def on_ready() -> None: # lorsque l'on a lancé le bot par client.run()
 @client.command()
 async def status(context:commands.Context) -> None:
 
-    if running:
+    if DB.get_program_status():
         await context.send("Le programme est en cours de fonctionnement")
     else:
         await context.send("Le programme est arrêté")
+    
+    last_modification_time = DB.get_last_accomodations_update_time()
+    await context.send(f"Dernière mise à jour des données: {last_modification_time}")
 
 @client.command()
 async def stop(context:commands.Context) -> None:
 
-    if running:
-        set_running(False)
+    if DB.get_program_status():
+        DB.set_program_status(False)
         await context.send("Le programme s'arrête")
-        print("Restarting...")
+        print("Stopped")
     else:
         await context.send("Le programme est déjà arrêté")
 
 @client.command()
 async def start(context:commands.Context) -> None:
 
-    if not running:
-        set_running(True)
-        await context.send("Le programme se redémarre")
-        print("Stopped")
+    if not DB.get_program_status():
+        DB.set_program_status(True)
+        await context.send("Le programme démarre")
+        print("Started")
     else:
         await context.send("Le programme est déjà démarré")
 
@@ -84,24 +81,13 @@ async def city(context:commands.Context, *args) -> None: # envoie dans le tchat 
 
     data = []
     wished_city = " ".join(args)
-
-    with open("../available.json", "r") as f:
-        data = json.loads(f.read())
-
-    for acc in data:
-        address = acc["residence"]["address"]
-        if re.search(wished_city, address, re.IGNORECASE):
-
-            area = acc["area"]["max"]
-            rent = acc["occupationModes"][0]["rent"]["max"]
-            residence = acc["residence"]["label"]
-
-            msg = f"{address} - {residence}\n{rent/100}€/mois\n{area}m²"
+    
+    for acc in DB.get_accomodations_from_address(wished_city):
+            msg = f"{acc.address} - {acc.residence_name}\n{acc.max_rent/100}€/mois\n{acc.max_area}m²"
             await context.send(msg)
     
-    statbuf = os.stat("../available.json")
-    last_mod = statbuf.st_mtime
-    await context.send(f"Dernière mise à jour des données: {time.ctime(last_mod)}")
+    last_modification_time = DB.get_last_accomodations_update_time()
+    await context.send(f"Dernière mise à jour des données: {last_modification_time}")
 
 
 @client.command()

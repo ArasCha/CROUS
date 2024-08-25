@@ -1,6 +1,7 @@
 import aiohttp
 from dotenv import dotenv_values
 import json
+import asyncio
 
 ile_de_france_bounds = "[{\"lon\":1.8759155273437502,\"lat\":49.017157315497165},{\"lon\":2.9278564453125,\"lat\":48.671012624325996}]"
 metropolitan_france_bounds = "[{\"lon\":-9.9079,\"lat\":51.7087},{\"lon\":14.3224,\"lat\":40.5721}]"
@@ -54,7 +55,6 @@ class CrousSession:
                     return False
                 return True
 
-
     async def get_free_accommodations(self, max_page_size = 500, page=1) -> list[dict]:
         """
         max_page_size: sometimes there are more free accommodations than what it is possible to display on one page, so many pages are needed. While our current page is not empty, we request the next page.
@@ -68,6 +68,9 @@ class CrousSession:
             check_token(response.headers)
             try:
                 data = await response.json()
+                if response.status != 200:
+                    raise ApiProblem(response.status, data)
+                
             except aiohttp.client_exceptions.ContentTypeError:
                 print(f"Nothing in the response (litterally nothing) by requesting the api {self.api_version}, the provided size of {max_page_size} is too big")
                 return []
@@ -78,19 +81,19 @@ class CrousSession:
         return data['results']['items'] + await self.get_free_accommodations(max_page_size, page=page+1)
     
     
-    async def _add_accommodation_to_selection(self, accommodation_id: int):
+    async def add_accommodation_to_selection(self, accommodation_id: int):
     
         url = f"https://trouverunlogement.lescrous.fr/api/fr/tools/{self.api_version}/carts/5112591/items"
         body = "{\"accommodation\":"f"{accommodation_id}""}"
         
         async with self.session.post(url, data=body) as response:
             if response.status != 200:
-                raise Exception(f"Error while adding accommodation {accommodation_id} to selection:\n\n{await response.text()}")
+                raise ApiProblem(response.status, f"Error while adding accommodation {accommodation_id} to selection:\n\n{await response.text()}")
 
 
     async def book_accommodation(self, accommodation_id: int):
         
-        # await self._add_accommodation_to_selection(accommodation_id) # should already be listed in prg()
+        # await self.add_accommodation_to_selection(accommodation_id) # should already be listed in prg()
 
         url = f"https://trouverunlogement.lescrous.fr/api/fr/tools/{self.api_version}/requests"
         body  = (
@@ -107,7 +110,7 @@ class CrousSession:
         
         async with self.session.post(url, data=body) as response:
             if response.status != 200:
-                raise Exception(f"Error while booking accommodation {accommodation_id}:\n\n{await response.text()}")
+                raise ApiProblem(response.status, f"Error while booking accommodation {accommodation_id}:\n\n{await response.text()}")
 
 
     async def get_cart(self):
@@ -119,13 +122,6 @@ class CrousSession:
             return data["items"]
 
 
-def get_data_simulation() -> list[dict]:
-
-    with open("../available.json", "r", encoding="utf-8") as f:
-        content = f.read()
-    
-    return json.loads(content)
-
 
 def check_token(headers: aiohttp.ClientResponse.headers):
 
@@ -134,4 +130,9 @@ def check_token(headers: aiohttp.ClientResponse.headers):
 
 
 class TokenDead(Exception):
-    pass
+    def __init__(self):
+        super().__init__("**Le token est mort**")
+
+class ApiProblem(Exception):
+    def __init__(self, response_status: int, response_data: str):
+        super().__init__(f"**Problème de l'API**:\nStatus: {response_status}\n{response_data}")

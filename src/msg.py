@@ -1,7 +1,7 @@
 import dscrd
 
 def format_acc_msg(acc) -> str:
-    return f"{acc.residence_name} - {acc.address}\n{acc.max_rent/100}€/mois\n{acc.max_area}m²"
+    return f"{acc.residence_name} - {acc.address}\n{acc.max_rent}€/mois\n{acc.max_area}m²"
 
 
 async def tell_new_accommodation(accommodation) -> None:

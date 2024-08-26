@@ -83,7 +83,7 @@ async def city(context:commands.Context, *args) -> None: # envoie dans le tchat 
     wished_city = " ".join(args)
     
     for acc in DB.get_accomodations_from_address(wished_city):
-            msg = f"{acc.address} - {acc.residence_name}\n{acc.max_rent/100}€/mois\n{acc.max_area}m²"
+            msg = f"{acc.address} - {acc.residence_name}\n{acc.max_rent}€/mois\n{acc.max_area}m²"
             await context.send(msg)
 
 

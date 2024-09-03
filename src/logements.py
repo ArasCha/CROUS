@@ -57,12 +57,41 @@ async def is_token_ok(token:str) -> bool:
 
 def is_bookable(accommodation: Accomodation) -> list:
     
-    pattern = re.compile(r"\b75005\b")
+    wishes = [
+        {
+            "address_pattern": re.compile(r"\b 75005\b"),
+            "residence_pattern": re.compile(r"\b Carmes\b")
+        },
+        {
+            "address_pattern": re.compile(r"\b 75005\b"),
+            "residence_pattern": re.compile(r"\b Rollin\b")
+        },
+        {
+            "address_pattern": re.compile(r"\b 75005\b"),
+            "residence_pattern": re.compile(r"\b Coubertin\b")
+        },
+        {
+            "address_pattern": re.compile(r"\b 75005\b"),
+            "residence_pattern": re.compile(r"\b Hostater\b")
+        },
+        {
+            "address_pattern": re.compile(r"\b 75013\b"),
+            "residence_pattern": re.compile(r"\b Lourcine\b")
+        },
+        {
+            "address_pattern": re.compile(r"\b 75013\b"),
+            "residence_pattern": re.compile(r"\bSalp\b")
+        },
+        {
+            "address_pattern": re.compile(r"\b 75006\b"),
+            "residence_pattern": re.compile(r"\b Mazet\b")
+        },
+    ]
     
-    return pattern.search(accommodation.address)
+    for wish in wishes:
+        if wish["address_pattern"].search(accommodation.address) and wish["residence_pattern"].search(accommodation.residence_name):
+            return True
 
 def is_listable(accommodation: Accomodation) -> list:
     
-    pattern = re.compile(r"\b(75|92|93|94)\d{3}\b")
-
-    return pattern.search(accommodation.address)
+    return is_bookable(accommodation)

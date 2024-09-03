@@ -1,7 +1,6 @@
 import aiohttp
 from dotenv import dotenv_values
-import json
-import asyncio
+
 
 ile_de_france_bounds = "[{\"lon\":1.8759155273437502,\"lat\":49.017157315497165},{\"lon\":2.9278564453125,\"lat\":48.671012624325996}]"
 metropolitan_france_bounds = "[{\"lon\":-9.9079,\"lat\":51.7087},{\"lon\":14.3224,\"lat\":40.5721}]"
@@ -122,6 +121,12 @@ class CrousSession:
             return data["items"]
 
 
+def get_data_simulation() -> list[dict]:
+    import json
+    with open("../available.json", "r", encoding="utf-8") as f:
+        content = f.read()
+
+    return json.loads(content)
 
 def check_token(headers: aiohttp.ClientResponse.headers):
 

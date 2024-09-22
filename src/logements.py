@@ -28,7 +28,7 @@ async def prg() -> None:
             
             cart = await crous.get_cart()
             cart_acc_ids = [acc["accommodation"]["id"] for acc in cart]
-            
+
             listable_acc_filtered = list(filter(lambda acc: acc.id not in cart_acc_ids, listable_acc))
             
             for acc in listable_acc_filtered:

@@ -98,12 +98,7 @@ async def clear(context:commands.Context, nb) -> None: # delete the last nb mess
         nb = len(messages)
 
     for i in range(nb):
-        try:
-            await messages[i].delete()
-        except discord.errors.HTTPException:
-            print("discord.errors.HTTPException: currently waiting and retrying")
-            await asyncio.sleep(5)
-            await messages[i].delete()
+        await delete_message(messages[i])
 
 
 #-------------------------------------FUNCTIONS-----------------------------------------
@@ -126,6 +121,13 @@ async def get_previous_msgs(channel:discord.TextChannel) -> list[str]:
     messages: list[discord.Message] = await channel.history(limit=200).flatten()
     return messages
 
+async def delete_message(message:discord.Message):
+    try:
+        await message.delete()
+    except discord.errors.HTTPException:
+        print("discord.errors.HTTPException: currently waiting and retrying")
+        await asyncio.sleep(5)
+        await message.delete()
 
 async def clean_old_msgs(channel:discord.TextChannel) -> None:
 
@@ -136,7 +138,7 @@ async def clean_old_msgs(channel:discord.TextChannel) -> None:
         one_day = datetime(2000, 1, 2, 0, 0, 0) - datetime(2000, 1, 1, 0, 0, 0)
 
         if now - msg.created_at > one_day:
-            await msg.delete()
+            await delete_message(msg)
 
 
 async def already_sent(msg:str, channel:discord.TextChannel) -> bool:

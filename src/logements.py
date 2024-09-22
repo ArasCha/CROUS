@@ -58,8 +58,8 @@ def is_bookable(accommodation: Accomodation) -> list:
     
     wishes = [
         {
-            "address_pattern": re.compile(r"\b75005\b"),
-            "residence_pattern": re.compile(r"Carmes", re.IGNORECASE)
+            "address_pattern": re.compile(r"\b75013\b"),
+            "residence_pattern": re.compile(r"Lalet", re.IGNORECASE)
         },
         {
             "address_pattern": re.compile(r"\b75005\b"),
@@ -67,19 +67,7 @@ def is_bookable(accommodation: Accomodation) -> list:
         },
         {
             "address_pattern": re.compile(r"\b75005\b"),
-            "residence_pattern": re.compile(r"Coubertin", re.IGNORECASE)
-        },
-        {
-            "address_pattern": re.compile(r"\b75005\b"),
             "residence_pattern": re.compile(r"Hostater", re.IGNORECASE)
-        },
-        {
-            "address_pattern": re.compile(r"\b75013\b"),
-            "residence_pattern": re.compile(r"Lourcine", re.IGNORECASE)
-        },
-        {   
-            "address_pattern": re.compile(r"\b75013\b"),
-            "residence_pattern": re.compile(r"Salp", re.IGNORECASE)
         },
         {
             "address_pattern": re.compile(r"\b75006\b"),
@@ -88,7 +76,7 @@ def is_bookable(accommodation: Accomodation) -> list:
     ]
     
     for wish in wishes:
-        if wish["address_pattern"].search(accommodation.address) and wish["residence_pattern"].search(accommodation.residence_name):
+        if wish["address_pattern"].search(accommodation.address) and wish["residence_pattern"].search(accommodation.residence_name) and accommodation.min_area >= 17:
             return True
 
 def is_listable(accommodation: Accomodation) -> list:

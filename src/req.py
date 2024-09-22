@@ -4,7 +4,7 @@ from dotenv import dotenv_values
 
 ile_de_france_bounds = "[{\"lon\":1.8759155273437502,\"lat\":49.017157315497165},{\"lon\":2.9278564453125,\"lat\":48.671012624325996}]"
 metropolitan_france_bounds = "[{\"lon\":-9.9079,\"lat\":51.7087},{\"lon\":14.3224,\"lat\":40.5721}]"
-occupation_mode = "[\"alone\"]"
+occupation_mode = "[\"alone\",\"couple\"]"
 
 
 class CrousSession:

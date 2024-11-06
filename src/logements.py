@@ -22,6 +22,11 @@ async def prg() -> None:
             
             DB.set_available_accomodations(free_acc)
             accomodations = [Accomodation(acc) for acc in free_acc]
+
+            notifiable_acc = list(filter(is_notifiable, accomodations))
+
+            for acc in notifiable_acc:
+                await tell_new_accommodation(acc)
             
             listable_acc = list(filter(is_listable, accomodations))
             if not listable_acc: return #empty
@@ -54,7 +59,7 @@ async def is_token_ok(token:str) -> bool:
         return await crous.test_token(token)
 
 
-def is_bookable(accommodation: Accomodation) -> list:
+def is_bookable(accommodation: Accomodation) -> bool:
     
     wishes = [
         {
@@ -79,6 +84,28 @@ def is_bookable(accommodation: Accomodation) -> list:
         if wish["address_pattern"].search(accommodation.address) and wish["residence_pattern"].search(accommodation.residence_name) and accommodation.min_area >= 17:
             return True
 
-def is_listable(accommodation: Accomodation) -> list:
+def is_listable(accommodation: Accomodation) -> bool:
     
     return is_bookable(accommodation)
+
+
+def is_notifiable(accommodation: Accomodation) -> bool:
+    
+    wishes = [
+        {
+            "address_pattern": re.compile(r"\b75006\b"),
+            "residence_pattern": re.compile(r"Bonaparte", re.IGNORECASE)
+        },
+        {
+            "address_pattern": re.compile(r"\b75005\b"),
+            "residence_pattern": re.compile(r"Carmes", re.IGNORECASE)
+        },
+        {
+            "address_pattern": re.compile(r"\b75014\b"),
+            "residence_pattern": re.compile(r"Jacques", re.IGNORECASE)
+        }
+    ]
+
+    for wish in wishes:
+        if wish["address_pattern"].search(accommodation.address) and wish["residence_pattern"].search(accommodation.residence_name):
+            return True
